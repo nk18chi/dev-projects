@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { css } from '@emotion/react'
-import { Button, Grid, Typography, Stack, Chip } from '@mui/material'
+import mergeImages from 'merge-images'
+import { Button, Grid, Typography, Stack, Chip, Skeleton } from '@mui/material'
 /** @jsxImportSource @emotion/react */
 
 const styleApp = css`
@@ -27,6 +28,13 @@ const styleApp = css`
       text-align: left;
       font-size: 20px;
       font-weight: bold;
+    }
+  }
+  .chipsGroup {
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    .MuiChip-root {
+      margin: 4px;
     }
   }
 `
@@ -161,18 +169,28 @@ const imageSettings: TImageSetting = {
 
 const App = () => {
   const [settings, setSettings] = useState({
-    hair: 'default.png',
-    ears: 'default.png',
-    eyes: 'default.png',
-    mouth: 'default.png',
+    backgrounds: 'blue70.png',
     neck: 'default.png',
     leg: 'default.png',
+    ears: 'default.png',
+    nose: 'default.png',
+    mouth: 'default.png',
+    hair: 'default.png',
+    eyes: 'default.png',
     accessories: 'headphone.png',
-    backgrounds: 'blue50.png',
   })
+
   const [selectedAccessory, setSelectedAccessory] = useState<ACCESSORIES>(
     ACCESSORIES.hair
   )
+  const [alpacaImage, setAlpacaImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const imageList: string[] = Object.entries(settings).map(
+      ([key, value]) => `alpaca/${key}/${value}`
+    )
+    mergeImages(imageList).then((b64) => setAlpacaImage(b64))
+  }, [settings])
 
   return (
     <main className="app" css={styleApp}>
@@ -181,7 +199,11 @@ const App = () => {
       </Typography>
       <Grid className="generator-container" container spacing={2}>
         <Grid className="image-container" item xs={6}>
-          <img src="/alpaca/backgrounds/blue50.png" alt="alpaca" />
+          {alpacaImage ? (
+            <img src={alpacaImage} alt="alpaca" />
+          ) : (
+            <Skeleton variant="rectangular" width={460} height={460} />
+          )}
           <div className="buttonGroup">
             <Button variant="outlined">Random</Button>
             <Button variant="outlined">Download</Button>
@@ -191,7 +213,7 @@ const App = () => {
           <Typography variant="body1" gutterBottom>
             Accessorize the alpaca
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack className="chipsGroup" direction="row" spacing={1}>
             {Object.values(imageSettings).map((value) => (
               <Chip
                 label={value.label}
@@ -206,7 +228,7 @@ const App = () => {
           <Typography variant="body1" gutterBottom>
             Style
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack className="chipsGroup" direction="row" spacing={1}>
             {imageSettings[selectedAccessory]?.children?.map((value) => (
               <Chip
                 label={value.label}
