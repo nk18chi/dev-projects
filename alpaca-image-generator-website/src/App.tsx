@@ -48,6 +48,7 @@ enum ACCESSORIES {
   leg = 'leg',
   accessories = 'accessories',
   backgrounds = 'backgrounds',
+  nose = 'nose',
 }
 
 type TImageSettingChildren = {
@@ -55,10 +56,12 @@ type TImageSettingChildren = {
   fileName: string
 }
 
+type TExcludeAccessories = Exclude<ACCESSORIES, ACCESSORIES.nose>
+
 type TImageSetting = {
-  [key in ACCESSORIES]: {
+  [key in TExcludeAccessories]: {
     label: string
-    enumType: ACCESSORIES // key is always string so enumType should be in value as well
+    enumType: TExcludeAccessories // key is always string so enumType should be in value as well
     children: TImageSettingChildren[]
   }
 }
@@ -168,7 +171,7 @@ const imageSettings: TImageSetting = {
 }
 
 const App = () => {
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<{ [key in ACCESSORIES]: string }>({
     backgrounds: 'blue70.png',
     neck: 'default.png',
     leg: 'default.png',
@@ -180,9 +183,8 @@ const App = () => {
     accessories: 'headphone.png',
   })
 
-  const [selectedAccessory, setSelectedAccessory] = useState<ACCESSORIES>(
-    ACCESSORIES.hair
-  )
+  const [selectedAccessory, setSelectedAccessory] =
+    useState<TExcludeAccessories>(ACCESSORIES.hair)
   const [alpacaImage, setAlpacaImage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -191,6 +193,16 @@ const App = () => {
     )
     mergeImages(imageList).then((b64) => setAlpacaImage(b64))
   }, [settings])
+
+  const randomImages = () => {
+    const newSettings: { [key in ACCESSORIES]: string } = { ...settings }
+    Object.values(imageSettings).map((value) => {
+      const randomNum = Math.floor(Math.random() * value.children.length)
+      newSettings[value.enumType] = value.children[randomNum].fileName
+      return null
+    })
+    setSettings(newSettings)
+  }
 
   return (
     <main className="app" css={styleApp}>
@@ -205,7 +217,9 @@ const App = () => {
             <Skeleton variant="rectangular" width={460} height={460} />
           )}
           <div className="buttonGroup">
-            <Button variant="outlined">Random</Button>
+            <Button variant="outlined" onClick={randomImages}>
+              Random
+            </Button>
             <Button variant="outlined">Download</Button>
           </div>
         </Grid>
