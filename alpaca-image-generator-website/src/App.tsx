@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { css } from '@emotion/react'
 import mergeImages from 'merge-images'
-import { Button, Grid, Typography, Stack, Chip, Skeleton } from '@mui/material'
+import {
+  Button,
+  Grid,
+  Typography,
+  Stack,
+  Chip,
+  Skeleton,
+  Snackbar,
+  Alert,
+} from '@mui/material'
 /** @jsxImportSource @emotion/react */
 
 const styleApp = css`
@@ -128,7 +137,7 @@ const imageSettings: TImageSetting = {
     children: [
       { label: 'default', fileName: 'default.png' },
       { label: 'bubble-tea', fileName: 'bubble-tea.png' },
-      { label: 'cookies', fileName: 'cookies.png' },
+      { label: 'cookie', fileName: 'cookie.png' },
       { label: 'game-console', fileName: 'game-console.png' },
       { label: 'tilt-backward', fileName: 'tilt-backward.png' },
       { label: 'tilt-forward', fileName: 'tilt-forward.png' },
@@ -182,16 +191,18 @@ const App = () => {
     eyes: 'default.png',
     accessories: 'headphone.png',
   })
-
   const [selectedAccessory, setSelectedAccessory] =
     useState<TExcludeAccessories>(ACCESSORIES.hair)
   const [alpacaImage, setAlpacaImage] = useState<string | null>(null)
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false)
 
   useEffect(() => {
     const imageList: string[] = Object.entries(settings).map(
       ([key, value]) => `alpaca/${key}/${value}`
     )
-    mergeImages(imageList).then((b64) => setAlpacaImage(b64))
+    mergeImages(imageList)
+      .then((b64) => setAlpacaImage(b64))
+      .catch(() => setSnackbarOpen(true))
   }, [settings])
 
   const randomImages = () => {
@@ -271,6 +282,19 @@ const App = () => {
           </Stack>
         </Grid>
       </Grid>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <Alert severity="error" variant="filled">
+          Generate image error. Please refresh the page.
+        </Alert>
+      </Snackbar>
     </main>
   )
 }
