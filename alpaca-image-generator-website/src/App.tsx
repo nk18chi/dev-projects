@@ -220,7 +220,15 @@ const App = () => {
             <Button variant="outlined" onClick={randomImages}>
               Random
             </Button>
-            <Button variant="outlined">Download</Button>
+            {alpacaImage && (
+              <Button
+                variant="outlined"
+                download="alpaca.png"
+                href={alpacaImage}
+              >
+                Download
+              </Button>
+            )}
           </div>
         </Grid>
         <Grid className="setting-container" item xs={6}>
