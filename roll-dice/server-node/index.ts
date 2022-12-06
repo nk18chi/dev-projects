@@ -1,5 +1,6 @@
 const express = require("express");
 import { Request, Response } from "express";
+import { getRandom } from "./utils";
 const cors = require("cors");
 const app = express();
 const port = 4000;
@@ -21,6 +22,9 @@ app.post("/roll-dice", (req: Request, res: Response) => {
   return res.json(result);
 });
 
-const getRandom = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max + 1 - min) + min);
-};
+app.use((error, req, res, next) => {
+  const status = error.status || 400;
+  res.status(status).send(error.message);
+});
+
+export default app;
