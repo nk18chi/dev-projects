@@ -1,5 +1,5 @@
 const express = require("express");
-import { Request, Response } from "express";
+import { Request, Response, ErrorRequestHandler } from "express";
 import { getRandom } from "./utils";
 const cors = require("cors");
 const app = express();
@@ -22,9 +22,10 @@ app.post("/roll-dice", (req: Request, res: Response) => {
   return res.json(result);
 });
 
-app.use((error, req, res, next) => {
-  const status = error.status || 400;
-  res.status(status).send(error.message);
-});
+const errorHandler: ErrorRequestHandler = (err, _, res) => {
+  const status = err.status || 400;
+  res.status(status).send(err.message);
+};
+app.use(errorHandler);
 
 export default app;
