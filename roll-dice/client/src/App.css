@@ -1,0 +1,34 @@
+#app {
+  text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 800px;
+    margin: auto;
+}
+
+form div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px;
+}
+
+#statistic-table {
+  margin: 10px auto;
+}
+
+#dice-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
