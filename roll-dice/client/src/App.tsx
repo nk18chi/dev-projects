@@ -44,7 +44,7 @@ const App = () => {
   return (
     <div id='app'>
       <header>
-        <h1>Roll Dice</h1>
+        <h1>Roll Dice App</h1>
       </header>
       <main>
         <section>
@@ -53,6 +53,7 @@ const App = () => {
               <label htmlFor='countDice'>How many dices?</label>
               <input
                 name='countDice'
+                aria-label='countDice'
                 type='number'
                 value={input.count}
                 onChange={(e) => {
@@ -63,6 +64,7 @@ const App = () => {
             <div>
               <label htmlFor='sizeDice'>What size of dices?</label>
               <select
+                data-testid='select-sizeDice'
                 name='sizeDice'
                 value={EnumSize[input.size]}
                 onChange={(e) => {
@@ -76,13 +78,17 @@ const App = () => {
             </div>
           </form>
           <div id='buttons-container'>
-            <button onClick={randomSetting}>Random Settings</button>
-            <button onClick={rollDice}>Roll Dice</button>
+            <button aria-label='button-random' onClick={randomSetting}>
+              Random Settings
+            </button>
+            <button aria-label='button-roll' onClick={rollDice}>
+              Roll Dice
+            </button>
           </div>
         </section>
         <section id='dice-container'>
-          {dice.map((die: number) => (
-            <img className='dice-image' src={`dice/${die.toString()}.svg`} alt='dic' style={{ width: (input.size + 1) * 25 }} />
+          {dice.map((die: number, i: number) => (
+            <img key={i} className='dice-image' src={`dice/${die.toString()}.svg`} alt='dice' style={{ width: (input.size + 1) * 25 }} />
           ))}
         </section>
         <section>

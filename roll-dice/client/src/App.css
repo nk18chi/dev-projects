@@ -5,12 +5,14 @@
 form {
     display: flex;
     flex-direction: column;
-    gap: 4px
+    gap: 4px;
+    max-width: 800px;
+    margin: auto;
 }
 
 form div {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 #buttons-container {
