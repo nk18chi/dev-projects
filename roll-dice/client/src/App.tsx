@@ -24,7 +24,11 @@ const App = () => {
     });
   };
   const rollDice = () => {
-    fetch("http://localhost:4000/roll-dice", {
+    const urls: { [key: string]: string } = {
+      node: "http://localhost:4000/roll-dice",
+      django: "http://localhost:8000/api/roll-dice",
+    };
+    fetch(urls.django, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
